@@ -35,9 +35,9 @@ def get_legal_moves(player, game_board=board):
     legal_moves = []
     other = opponent(player)
     directions = [
-        (-1, -1), (-1, 0), (-1, 1),
-        (0, -1),           (0, 1),
-        (1, -1),  (1, 0),  (1, 1),
+        (-1, 1),  (0, 1),  (1, 1),
+        (-1, 0),           (1, 0),
+        (-1, -1), (0, -1), (1, -1),
     ]
 
     for y in range(size):

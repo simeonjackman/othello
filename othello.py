@@ -231,7 +231,7 @@ def manual_play(player, game_board=board):
         return move
 
 ###
-#  Random Play
+#  Random Bot
 ###
 def random_bot(player, game_board=board):
     legal_moves = get_legal_moves(player, game_board)
@@ -254,6 +254,31 @@ def mystery_bot(player, game_board=board):
     move = legal_moves[0]
     apply_move(player, move, game_board)
     return move
+    
+###
+#  Genius Bot
+###
+def genius_bot(player, game_board=board):
+    legal_moves = get_legal_moves(player, game_board)
+    if len(legal_moves) == 0:
+        apply_move(player, None, game_board)
+        return "Pass"
+    best_move = legal_moves[0]
+    best_score = score_after_move(player, best_move, game_board)
+
+    for move in legal_moves[1:]:
+        move_score = score_after_move(player, move, game_board)
+        if player == "WHITE":
+            if move_score > best_score:
+                best_score = move_score
+                best_move = move
+        else:
+            if move_score < best_score:
+                best_score = move_score
+                best_move = move
+
+    apply_move(player, best_move, game_board)
+    return best_move
 
 ###
 #  Your Bot
@@ -272,7 +297,8 @@ def your_bot(player, game_board=board):
 # 1. manual_play: Manuell spielen
 # 2. random_bot: Zufälligen Zug wählen
 # 3. mystery_bot: ?
-# 4. your_bot: Ihr Bot
+# 4. genius_bot: ?
+# 5. your_bot: Ihr Bot
 ###
 
 

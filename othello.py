@@ -5,7 +5,9 @@ from gturtle import *
 makeTurtle()
 hideTurtle()
 
+##
 # Konfiguration
+##
 
 # Brettgrösse
 size = 8 # Hier kann das Brett grösser gemacht werden
@@ -13,6 +15,8 @@ size = 8 # Hier kann das Brett grösser gemacht werden
 player_turn = "BLACK"
 # Wie lange zwischen zügen pausiert wird in ms
 turn_delay_timer = 0
+# legale Züge anzeigen
+show_legal_moves = False
 # Zwischenstand nach möglichem Zug anzeigen
 show_potential_score = False
 # Verschieben des Spielfeldes auf der X-Achse
@@ -142,7 +146,7 @@ def draw_board():
             if value == "BLACK":
                 setPenColor("black")
                 dot(cell_size)
-            if (x,y) in legal_moves:
+            if show_legal_moves and (x,y) in legal_moves:
                 setPenColor("gray")
                 dot(cell_size)
                 if show_potential_score:
@@ -186,6 +190,7 @@ def apply_move(player, move, game_board=board):
 
             current_x += dx
             current_y += dy
+
 ###
 #  Manual Play
 ###
@@ -228,7 +233,6 @@ def manual_play(player, game_board=board):
 ###
 #  Random Play
 ###
-
 def random_bot(player, game_board=board):
     legal_moves = get_legal_moves(player, game_board)
     if len(legal_moves) == 0:
@@ -242,7 +246,6 @@ def random_bot(player, game_board=board):
 ###
 #  Mystery Bot
 ###
-
 def mystery_bot(player, game_board=board):
     legal_moves = get_legal_moves(player, game_board)
     if len(legal_moves) == 0:
@@ -255,7 +258,6 @@ def mystery_bot(player, game_board=board):
 ###
 #  Your Bot
 ###
-
 def your_bot(player, game_board=board):
     legal_moves = get_legal_moves(player, game_board)
     if len(legal_moves) == 0:

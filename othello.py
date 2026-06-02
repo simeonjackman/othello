@@ -20,6 +20,7 @@ y_offset = 0
 # Grösse einer Zelle definieren
 cell_size = int(400/size)
 
+
 # Startposition definieren
 board = []
 for i, y in enumerate(range(size)):
@@ -120,18 +121,9 @@ def apply_move(player, move, game_board=board):
 
             current_x += dx
             current_y += dy
-
-def random_play(player, game_board=board):
-    legal_moves = get_legal_moves(player, game_board)
-    if len(legal_moves) == 0:
-        apply_move(player, None, game_board)
-        return "Pass"
-
-    move = random.choice(legal_moves)
-    apply_move(player, move, game_board)
-    return move
-
-
+###
+#  Manual Play
+###
 def manual_play(player, game_board=board):
     legal_moves = get_legal_moves(player, game_board)
     if len(legal_moves) == 0:
@@ -167,6 +159,45 @@ def manual_play(player, game_board=board):
 
         apply_move(player, move, game_board)
         return move
+
+###
+#  Random Play
+###
+
+def random_bot(player, game_board=board):
+    legal_moves = get_legal_moves(player, game_board)
+    if len(legal_moves) == 0:
+        apply_move(player, None, game_board)
+        return "Pass"
+
+    move = random.choice(legal_moves)
+    apply_move(player, move, game_board)
+    return move
+
+###
+#  Mystery Bot
+###
+
+def mystery_bot(player, game_board=board):
+    legal_moves = get_legal_moves(player, game_board)
+    if len(legal_moves) == 0:
+        apply_move(player, None, game_board)
+        return "Pass"
+    move = legal_moves[0]
+    apply_move(player, move, game_board)
+    return move
+
+###
+#  Your Bot
+###
+
+def your_bot(player, game_board=board):
+    legal_moves = get_legal_moves(player, game_board)
+    if len(legal_moves) == 0:
+        apply_move(player, None, game_board)
+        return "Pass"
+    apply_move(player, None, game_board)
+    return "Pass"
 
 # Zeichnet Achsen
 def draw_axis():
@@ -206,17 +237,32 @@ def draw_board():
             if (x,y) in legal_moves:
                 setPenColor("gray")
                 dot(50)
-            
+
+
+###
+# Hier können Bots zum spielen gewählt werden
+# Zur Auswahl stehen alle, welche im Code definiert wurden
+# 1. manual_play: Manuell spielen
+# 2. random_bot: Zufälligen Zug wählen
+# 3. mystery_bot: ?
+# 4. your_bot: Ihr Bot
+###
+
+
+# Bot für schwarz wählen
+player_1 = random_bot
+# Bot für weiss wählen
+player_2 = mystery_bot            
 
 draw_axis()        
 draw_board()
 for i in range(31):
     print(player_turn + " plays:")
-    print(random_play(player_turn))
+    print(player_1(player_turn))
     draw_board()
     delay(turn_delay_timer)
     print(player_turn + " plays:")
-    print(random_play(player_turn))
+    print(player_2(player_turn))
     draw_board()
     delay(turn_delay_timer)
 

@@ -87,6 +87,44 @@ def get_legal_moves(player, game_board=board):
 
     return legal_moves
 
+# Zeichnet Achsen
+def draw_axis():
+    setFontSize(20)
+    for y, _ in enumerate(board):
+        # x-Achse beschriften
+        setPos(x_offset + (y+0.35) * cell_size, y_offset - 0.5*cell_size)
+        setFillColor("black")
+        label(y)
+        # y-Achse beschriften
+        setPos(x_offset - 0.5*cell_size, y_offset + (y+0.35) * cell_size)
+        setFillColor("black")
+        label(y)
+            
+    
+# Zeichnet das Spielbrett
+def draw_board():
+    legal_moves = get_legal_moves(player_turn)
+    for y, _ in enumerate(board):
+        
+        for x, value in enumerate(board[y]):
+            setPenColor("black")
+            setPos(x_offset + x * cell_size, y_offset + y * cell_size)
+            setFillColor("green")
+            startPath()
+            repeat 4:
+                forward(cell_size)
+                right(90)
+            fillPath()
+            setPos(x_offset + (x+0.5) * cell_size, y_offset + (y + 0.5) * cell_size)
+            if value == "WHITE":
+                setPenColor("white")
+                dot(50)
+            if value == "BLACK":
+                setPenColor("black")
+                dot(cell_size)
+            if (x,y) in legal_moves:
+                setPenColor("gray")
+                dot(50)
 
 def apply_move(player, move, game_board=board):
     global player_turn
@@ -198,46 +236,6 @@ def your_bot(player, game_board=board):
         return "Pass"
     apply_move(player, None, game_board)
     return "Pass"
-
-# Zeichnet Achsen
-def draw_axis():
-    setFontSize(20)
-    for y, _ in enumerate(board):
-        # x-Achse beschriften
-        setPos(x_offset + (y+0.35) * cell_size, y_offset - 0.5*cell_size)
-        setFillColor("black")
-        label(y)
-        # y-Achse beschriften
-        setPos(x_offset - 0.5*cell_size, y_offset + (y+0.35) * cell_size)
-        setFillColor("black")
-        label(y)
-            
-    
-# Zeichnet das Spielbrett
-def draw_board():
-    legal_moves = get_legal_moves(player_turn)
-    for y, _ in enumerate(board):
-        
-        for x, value in enumerate(board[y]):
-            setPenColor("black")
-            setPos(x_offset + x * cell_size, y_offset + y * cell_size)
-            setFillColor("green")
-            startPath()
-            repeat 4:
-                forward(cell_size)
-                right(90)
-            fillPath()
-            setPos(x_offset + (x+0.5) * cell_size, y_offset + (y + 0.5) * cell_size)
-            if value == "WHITE":
-                setPenColor("white")
-                dot(50)
-            if value == "BLACK":
-                setPenColor("black")
-                dot(cell_size)
-            if (x,y) in legal_moves:
-                setPenColor("gray")
-                dot(50)
-
 
 ###
 # Hier können Bots zum spielen gewählt werden

@@ -24,7 +24,6 @@ board[int(size/2)][int(size/2)] = "WHITE"
 board[int(size/2)-1][int(size/2)-1] = "WHITE"
 board[int(size/2)][int(size/2)-1] = "BLACK"
 board[int(size/2)-1][int(size/2)] = "BLACK"
-print board
 
 def opponent(player):
     if player == "BLACK":
@@ -68,6 +67,48 @@ def get_legal_moves(player, game_board=board):
                     break
 
     return legal_moves
+
+
+def apply_move(player, move, game_board=board):
+    global player_turn
+    other = opponent(player)
+    x, y = move
+    directions = [
+        (-1, -1), (-1, 0), (-1, 1),
+        (0, -1),           (0, 1),
+        (1, -1),  (1, 0),  (1, 1),
+    ]
+
+    game_board[y][x] = player
+
+    for dx, dy in directions:
+        current_x = x + dx
+        current_y = y + dy
+        stones_to_flip = []
+
+        while 0 <= current_x < size and 0 <= current_y < size:
+            current_value = game_board[current_y][current_x]
+            if current_value == other:
+                stones_to_flip.append((current_x, current_y))
+            elif current_value == player:
+                for flip_x, flip_y in stones_to_flip:
+                    game_board[flip_y][flip_x] = player
+                break
+            else:
+                break
+
+            current_x += dx
+            current_y += dy
+    player_turn = other
+
+def play_random_move(player, game_board=board):
+    legal_moves = get_legal_moves(player, game_board)
+    if len(legal_moves) == 0:
+        return None
+
+    move = random.choice(legal_moves)
+    apply_move(player, move, game_board)
+    return move
         
 # Zeichnet das Spielbrett
 def draw_board():
@@ -111,3 +152,8 @@ def draw_board():
             
             
 draw_board()
+for i in range(61):
+    print(player_turn + " plays:")
+    print(play_random_move(player_turn))
+    draw_board()
+    delay(1000)

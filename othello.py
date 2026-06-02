@@ -279,7 +279,7 @@ def your_bot(player, game_board=board):
 # Bot für schwarz wählen
 player_1 = manual_play
 # Bot für weiss wählen
-player_2 = mystery_bot            
+player_2 = random_bot            
 
 draw_axis()        
 draw_board()
@@ -293,7 +293,7 @@ for i in range(32):
     draw_board()
     delay(turn_delay_timer)
 
-# Evalutieren wer gewonnen hat
+# Evaluieren wer gewonnen hat
 end_result = score(board)
 print("Result:" + str(end_result))
 if end_result[0] > end_result[1]:

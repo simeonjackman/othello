@@ -9,9 +9,10 @@ hideTurtle()
 
 # Brettgrösse
 size = 8 # Hier kann das Brett grösser gemacht werden
-
 # Wer darf beginnen
 player_turn = "BLACK"
+# Wie lange zwischen zügen pausiert wird in ms
+turn_delay_timer = 0
 
 # Startposition definieren
 board = []
@@ -30,6 +31,17 @@ def opponent(player):
         return "WHITE"
     return "BLACK"
 
+def score(board):
+    white = 0
+    black = 0
+    for y in board:
+        for x in y:
+            if x == "WHITE":
+                white +=1
+            elif x == "BLACK":
+                black +=1
+                
+    return (white,black)
 
 def get_legal_moves(player, game_board=board):
     legal_moves = []
@@ -189,12 +201,22 @@ def draw_board():
             
             
 draw_board()
-for i in range(61):
-    print(player_turn + " plays:")
-    print(manual_play(player_turn))
-    draw_board()
-    delay(1000)
+for i in range(31):
     print(player_turn + " plays:")
     print(random_play(player_turn))
     draw_board()
-    delay(1000)
+    delay(turn_delay_timer)
+    print(player_turn + " plays:")
+    print(random_play(player_turn))
+    draw_board()
+    delay(turn_delay_timer)
+
+# Evalutieren wer gewonnen hat
+end_result = score(board)
+print("Result:" + str(end_result))
+if end_result[0] > end_result[1]:
+    print("White wins")
+elif end_result[0] < end_result[1]:
+    print("Black wins")
+else:
+    print("Its a draw")

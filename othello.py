@@ -13,6 +13,12 @@ size = 8 # Hier kann das Brett grösser gemacht werden
 player_turn = "BLACK"
 # Wie lange zwischen zügen pausiert wird in ms
 turn_delay_timer = 0
+# Verschieben des Spielfeldes auf der X-Achse
+x_offset = 0 
+# Verschieben des Spielfeldes auf der Y-Achse
+y_offset = 0
+# Grösse einer Zelle definieren
+cell_size = int(400/size)
 
 # Startposition definieren
 board = []
@@ -84,6 +90,9 @@ def get_legal_moves(player, game_board=board):
 def apply_move(player, move, game_board=board):
     global player_turn
     other = opponent(player)
+    player_turn = other
+    if move == None:
+        return
     x, y = move
     directions = [
         (-1, -1), (-1, 0), (-1, 1),
@@ -111,12 +120,12 @@ def apply_move(player, move, game_board=board):
 
             current_x += dx
             current_y += dy
-    player_turn = other
 
 def random_play(player, game_board=board):
     legal_moves = get_legal_moves(player, game_board)
     if len(legal_moves) == 0:
-        return None
+        apply_move(player, None, game_board)
+        return "Pass"
 
     move = random.choice(legal_moves)
     apply_move(player, move, game_board)
@@ -158,16 +167,10 @@ def manual_play(player, game_board=board):
 
         apply_move(player, move, game_board)
         return move
-        
-# Zeichnet das Spielbrett
-def draw_board():
-    cell_size = int(400/size)
+
+# Zeichnet Achsen
+def draw_axis():
     setFontSize(20)
-    x_offset = 0 # Verschieben auf der X-Achse
-    y_offset = 0 # Verschieben auf der Y-Achse
-    
-    legal_moves = get_legal_moves(player_turn)
-    
     for y, _ in enumerate(board):
         # x-Achse beschriften
         setPos(x_offset + (y+0.35) * cell_size, y_offset - 0.5*cell_size)
@@ -177,6 +180,12 @@ def draw_board():
         setPos(x_offset - 0.5*cell_size, y_offset + (y+0.35) * cell_size)
         setFillColor("black")
         label(y)
+            
+    
+# Zeichnet das Spielbrett
+def draw_board():
+    legal_moves = get_legal_moves(player_turn)
+    for y, _ in enumerate(board):
         
         for x, value in enumerate(board[y]):
             setPenColor("black")
@@ -198,8 +207,8 @@ def draw_board():
                 setPenColor("gray")
                 dot(50)
             
-            
-            
+
+draw_axis()        
 draw_board()
 for i in range(31):
     print(player_turn + " plays:")

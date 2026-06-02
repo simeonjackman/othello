@@ -101,7 +101,7 @@ def apply_move(player, move, game_board=board):
             current_y += dy
     player_turn = other
 
-def play_random_move(player, game_board=board):
+def random_play(player, game_board=board):
     legal_moves = get_legal_moves(player, game_board)
     if len(legal_moves) == 0:
         return None
@@ -109,6 +109,43 @@ def play_random_move(player, game_board=board):
     move = random.choice(legal_moves)
     apply_move(player, move, game_board)
     return move
+
+
+def manual_play(player, game_board=board):
+    legal_moves = get_legal_moves(player, game_board)
+    if len(legal_moves) == 0:
+        print player + " has to pass"
+        return None
+
+    print player + " legal moves:"
+    print legal_moves
+
+    while True:
+        user_input = input("Choose move as x,y: ")
+        try:
+            parts = user_input.replace(",", " ").split()
+        except AttributeError:
+            print "Invalid input. Enter two numbers separated by a comma."
+            continue
+
+        if len(parts) != 2:
+            print "Invalid input. Enter two numbers, for example: 2 3"
+            continue
+
+        try:
+            x = int(parts[0])
+            y = int(parts[1])
+        except ValueError:
+            print "Invalid input. Enter numbers only."
+            continue
+
+        move = (x, y)
+        if move not in legal_moves:
+            print "Illegal move. Choose one of:", legal_moves
+            continue
+
+        apply_move(player, move, game_board)
+        return move
         
 # Zeichnet das Spielbrett
 def draw_board():
@@ -154,6 +191,10 @@ def draw_board():
 draw_board()
 for i in range(61):
     print(player_turn + " plays:")
-    print(play_random_move(player_turn))
+    print(manual_play(player_turn))
+    draw_board()
+    delay(1000)
+    print(player_turn + " plays:")
+    print(random_play(player_turn))
     draw_board()
     delay(1000)

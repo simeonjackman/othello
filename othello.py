@@ -10,6 +10,9 @@ hideTurtle()
 # Brettgrösse
 size = 8 # Hier kann das Brett grösser gemacht werden
 
+# Wer darf beginnen
+player_turn = "BLACK"
+
 # Startposition definieren
 board = []
 for i, y in enumerate(range(size)):
@@ -22,6 +25,7 @@ board[int(size/2)-1][int(size/2)-1] = "WHITE"
 board[int(size/2)][int(size/2)-1] = "BLACK"
 board[int(size/2)-1][int(size/2)] = "BLACK"
 print board
+
 def opponent(player):
     if player == "BLACK":
         return "WHITE"
@@ -71,6 +75,9 @@ def draw_board():
     setFontSize(20)
     x_offset = 0 # Verschieben auf der X-Achse
     y_offset = 0 # Verschieben auf der Y-Achse
+    
+    legal_moves = get_legal_moves(player_turn)
+    
     for y, _ in enumerate(board):
         # x-Achse beschriften
         setPos(x_offset + (y+0.35) * cell_size, y_offset - 0.5*cell_size)
@@ -97,7 +104,10 @@ def draw_board():
             if value == "BLACK":
                 setPenColor("black")
                 dot(cell_size)
+            if (x,y) in legal_moves:
+                setPenColor("gray")
+                dot(50)
+            
             
             
 draw_board()
-

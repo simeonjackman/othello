@@ -13,12 +13,14 @@ size = 8 # Hier kann das Brett grösser gemacht werden
 player_turn = "BLACK"
 # Wie lange zwischen zügen pausiert wird in ms
 turn_delay_timer = 0
+# Zwischenstand nach möglichem Zug anzeigen
+show_potential_score = False
 # Verschieben des Spielfeldes auf der X-Achse
 x_offset = 0 
 # Verschieben des Spielfeldes auf der Y-Achse
-y_offset = 0
+y_offset = -200
 # Grösse einer Zelle definieren
-cell_size = int(400/size)
+cell_size = int(600/size)
 
 
 # Startposition definieren
@@ -49,6 +51,24 @@ def score(board):
                 black +=1
                 
     return (white,black)
+
+def board_after_move(player, move, game_board=board):
+    global player_turn
+    copied_board = []
+    for y in game_board:
+        copied_row = []
+        for x in y:
+            copied_row.append(x)
+        copied_board.append(copied_row)
+
+    previous_turn = player_turn
+    apply_move(player, move, copied_board)
+    player_turn = previous_turn
+    return copied_board
+
+def score_after_move(player, move, game_board=board):
+    white, black = score(board_after_move(player, move, game_board))
+    return white - black
 
 def get_legal_moves(player, game_board=board):
     legal_moves = []
@@ -118,13 +138,20 @@ def draw_board():
             setPos(x_offset + (x+0.5) * cell_size, y_offset + (y + 0.5) * cell_size)
             if value == "WHITE":
                 setPenColor("white")
-                dot(50)
+                dot(cell_size)
             if value == "BLACK":
                 setPenColor("black")
                 dot(cell_size)
             if (x,y) in legal_moves:
                 setPenColor("gray")
-                dot(50)
+                dot(cell_size)
+                if show_potential_score:
+                    potential_score = score_after_move(player_turn, (x, y), board)
+                    setFontSize(int(cell_size / 2))
+                    setFillColor("black")
+                    setPos(x_offset + (x + 0.25) * cell_size, y_offset + (y + 0.25) * cell_size)
+                    setPenColor("black")
+                    label(potential_score)
 
 def apply_move(player, move, game_board=board):
     global player_turn
@@ -248,13 +275,13 @@ def your_bot(player, game_board=board):
 
 
 # Bot für schwarz wählen
-player_1 = random_bot
+player_1 = manual_play
 # Bot für weiss wählen
 player_2 = mystery_bot            
 
 draw_axis()        
 draw_board()
-for i in range(31):
+for i in range(32):
     print(player_turn + " plays:")
     print(player_1(player_turn))
     draw_board()

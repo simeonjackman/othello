@@ -392,6 +392,38 @@ def bot_bot(player, game_board=board):
     apply_move(player, best_move, game_board)
     return best_move
 
+###
+#  Tensai Bot
+###
+def tensai_bot(player, game_board=board):
+    legal_moves = get_legal_moves(player, game_board)
+    # Wenn wir keine Züge haben, müssen wir passen
+    if len(legal_moves) == 0:
+        apply_move(player, None, game_board)
+        return "Pass"
+    # Wir nehmen den Zug, bei dem der score maximal ist.
+    best_move = None
+    best_score = -1000
+
+    for move in legal_moves:
+        move_score = 0
+        if move_position(move) == "corner":
+            move_score += 10
+        if move_position(move) == "edge":
+            move_score += 7
+        if move_position(move) == "middle":
+            move_score += 0
+        if move_position(move) == "c_field":
+            move_score += -10
+        # Ist der aktuelle Zug der Beste?
+        if move_score > best_score:
+            best_score = move_score
+            best_move = move
+        
+
+    apply_move(player, best_move, game_board)
+    return best_move
+
 
 ###
 # Hier können Bots zum spielen gewählt werden
@@ -401,13 +433,14 @@ def bot_bot(player, game_board=board):
 # 3. mystery_bot: ?
 # 4. genius_bot: ?
 # 5. bot_bot
+# 6. tensai_bot
 ###
 
 
 # Bot für schwarz wählen
 player_1 = manual_play
 # Bot für weiss wählen
-player_2 = genius_bot
+player_2 = random_bot
 
 draw_axis()        
 draw_board()

@@ -404,12 +404,19 @@ def tensai_bot(player, game_board=board):
     if len(legal_moves) == 0:
         apply_move(player, None, game_board)
         return "Pass"
+    
     # Wir nehmen den Zug, bei dem der score maximal ist.
     best_move = None
     best_score = -1000
 
     for move in legal_moves:
         move_score = 0
+        board_after_potential_move = board_after_move(player, move, game_board=board)
+
+        # Wir berechnen, wieviele Safestones dazubekommen sind
+        safestones_added = safestones(player, board_after_potential_move) - safestones(player, board)
+        move_score += safestones_added * 4
+
         if move_position(move) == "corner":
             move_score += 10
         if move_position(move) == "edge":
@@ -490,6 +497,42 @@ def i_ah_bot(player, game_board=board):
     return best_move
 
 ###
+#  Der Fels Bot
+###
+def der_fels_bot(player, game_board=board):
+    legal_moves = get_legal_moves(player, game_board)
+    # Wenn wir keine Züge haben, müssen wir passen
+    if len(legal_moves) == 0:
+        apply_move(player, None, game_board)
+        return "Pass"
+        
+    # Wir nehmen den Zug, bei dem der score maximal ist.
+    best_move = None
+    best_score = -1000
+
+    # Wir prüfen jeden legalen Zug und bewerten ihn
+    for move in legal_moves:
+        move_score = 0
+        board_after_potential_move = board_after_move(player, move, game_board=board)
+        # Wir berechnen, ob Safestones dazubekommen sind
+        if safestones(player, board_after_potential_move) > safestones(player, board):
+            move_score += 100
+        # Wir evalieren wo wir unseren Stein hinsetzen
+        if move_position(move) == "corner":
+            move_score += 100
+        if move_position(move) == "edge":
+            move_score += 80
+        if move_position(move) == "middle":
+            move_score += 2
+        # Ist der aktuelle Zug der Beste?
+        if move_score > best_score:
+            best_score = move_score
+            best_move = move
+        
+    apply_move(player, best_move, game_board)
+    return best_move
+
+###
 # Hier können Bots zum spielen gewählt werden
 # Zur Auswahl stehen alle, welche im Code definiert wurden
 # 1. manual_play: Manuell spielen
@@ -500,6 +543,7 @@ def i_ah_bot(player, game_board=board):
 # 6. tensai_bot
 # 7. the_big_uttige_bot
 # 8. i_ah_bot
+# 9. der_fels_bot
 ###
 
 

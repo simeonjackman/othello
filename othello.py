@@ -83,6 +83,48 @@ def next_player_move_count_after_move(player, move, game_board=board):
     next_player = opponent(player)
     return len(get_legal_moves(next_player, next_board))
 
+# Wieviele sichere Steine hat ein Spieler auf einem Brett?
+def safestones(player, game_board=board):
+    safe_positions = set()
+
+    corners = [
+        (0, 0, 1, 0, 0, 1),
+        (size - 1, 0, -1, 0, 0, 1),
+        (0, size - 1, 1, 0, 0, -1),
+        (size - 1, size - 1, -1, 0, 0, -1),
+    ]
+
+    for corner_x, corner_y, edge_dx, edge_dy, edge2_dx, edge2_dy in corners:
+        if game_board[corner_y][corner_x] != player:
+            continue
+
+        safe_positions.add((corner_x, corner_y))
+
+        current_x = corner_x + edge_dx
+        current_y = corner_y + edge_dy
+        while 0 <= current_x < size and 0 <= current_y < size:
+            if game_board[current_y][current_x] != player:
+                break
+            safe_positions.add((current_x, current_y))
+            current_x += edge_dx
+            current_y += edge_dy
+
+        current_x = corner_x + edge2_dx
+        current_y = corner_y + edge2_dy
+        while 0 <= current_x < size and 0 <= current_y < size:
+            if game_board[current_y][current_x] != player:
+                break
+            safe_positions.add((current_x, current_y))
+            current_x += edge2_dx
+            current_y += edge2_dy
+
+    return len(safe_positions)
+
+# Wieviele sichere Steine hat ein Spieler nach einem möglichen Zug?
+def safestones_after_move(player, move, game_board=board):
+    next_board = board_after_move(player, move, game_board)
+    return safestones(player, next_board)
+
 def get_legal_moves(player, game_board=board):
     legal_moves = []
     other = opponent(player)

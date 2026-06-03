@@ -481,6 +481,9 @@ def i_ah_bot(player, game_board=board):
     for move in legal_moves:
         move_score = 0
         board_after_potential_move = board_after_move(player, move, game_board=board)
+        # Wir berechnen, wieviele Steine wir gedreht haben
+        stones_turned = stone_count(opponent(player), board_after_potential_move) - stone_count(opponent(player), board)
+        move_score += stones_turned
         # Wir berechnen, wieviele Safestones dazubekommen sind
         safestones_added = safestones(player, board_after_potential_move) - safestones(player, board)
         move_score += safestones_added * 2
@@ -530,6 +533,11 @@ def der_fels_bot(player, game_board=board):
             move_score += 80
         if move_position(move) == "middle":
             move_score += 2
+
+        # Wir berechnen, wieviele Steine wir gedreht haben
+        stones_turned = stone_count(opponent(player), board_after_potential_move) - stone_count(opponent(player), board)
+        move_score += stones_turned * 5
+
         # Ist der aktuelle Zug der Beste?
         if move_score > best_score:
             best_score = move_score

@@ -125,6 +125,27 @@ def safestones_after_move(player, move, game_board=board):
     next_board = board_after_move(player, move, game_board)
     return safestones(player, next_board)
 
+# Liegt ein möglicher Zug in einer Ecke, am Rand oder in der Mitte?
+def move_position(move, game_board=board):
+    if move == None:
+        return "pass"
+
+    x, y = move
+
+    if (x == 0 or x == size - 1) and (y == 0 or y == size - 1):
+        return "corner"
+
+    if (x == 1 and (y == 0 or y == size - 1)) or (x == size - 2 and (y == 0 or y == size - 1)):
+        return "c_field"
+
+    if (y == 1 and (x == 0 or x == size - 1)) or (y == size - 2 and (x == 0 or x == size - 1)):
+        return "c_field"
+
+    if x == 0 or x == size - 1 or y == 0 or y == size - 1:
+        return "edge"
+
+    return "middle"
+
 def get_legal_moves(player, game_board=board):
     legal_moves = []
     other = opponent(player)

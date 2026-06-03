@@ -24,7 +24,7 @@ x_offset = 0
 # Verschieben des Spielfeldes auf der Y-Achse
 y_offset = -200
 # Grösse einer Zelle definieren
-cell_size = int(600/size)
+cell_size = int(400/size)
 
 
 # Startposition definieren
@@ -198,6 +198,7 @@ def manual_play(player, game_board=board):
     legal_moves = get_legal_moves(player, game_board)
     if len(legal_moves) == 0:
         print player + " has to pass"
+        apply_move(player, None, game_board)
         return None
 
     print player + " legal moves:"

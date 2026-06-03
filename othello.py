@@ -370,7 +370,6 @@ def bot_bot(player, game_board=board):
     for corner_move in [(0,0),(size-1,0),(0,size-1),(size-1,size-1)]:
         if corner_move in legal_moves:
             apply_move(player, corner_move, game_board)
-            print("corner play!")
             return corner_move
         
     # Wir können nicht in die Ecken ziehen, deshalb prüfen wir, wieviele Steine wir umdrehen könnnen.
@@ -420,10 +419,28 @@ def tensai_bot(player, game_board=board):
             best_score = move_score
             best_move = move
         
-
     apply_move(player, best_move, game_board)
     return best_move
 
+###
+#  The Big Uttige Bot
+###
+def the_big_uttige_bot(player, game_board=board):
+    legal_moves = get_legal_moves(player, game_board)
+    # Wenn wir keine Züge haben, müssen wir passen
+    if len(legal_moves) == 0:
+        apply_move(player, None, game_board)
+        return "Pass"
+    # Wir prüfen, ob wir in den Ecken spielen können:
+    for corner_move in [(0,0),(size-1,0),(0,size-1),(size-1,size-1)]:
+        if corner_move in legal_moves:
+            apply_move(player, corner_move, game_board)
+            return corner_move
+    
+    # Sonst spielen wir einen random Zug
+    move = random.choice(legal_moves)
+    apply_move(player, move, game_board)
+    return move
 
 ###
 # Hier können Bots zum spielen gewählt werden
@@ -434,6 +451,7 @@ def tensai_bot(player, game_board=board):
 # 4. genius_bot: ?
 # 5. bot_bot
 # 6. tensai_bot
+# 7. the_big_uttige_bot
 ###
 
 

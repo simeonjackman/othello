@@ -16,7 +16,7 @@ player_turn = "BLACK"
 # Wie lange zwischen zügen pausiert wird in ms
 turn_delay_timer = 0
 # legale Züge anzeigen
-show_legal_moves = False
+show_legal_moves = True
 # Zwischenstand nach möglichem Zug anzeigen
 show_potential_score = False
 # Verschieben des Spielfeldes auf der X-Achse
@@ -316,33 +316,58 @@ def genius_bot(player, game_board=board):
     if len(legal_moves) == 0:
         apply_move(player, None, game_board)
         return "Pass"
-    best_move = legal_moves[0]
-    best_score = score_after_move(player, best_move, game_board)
+    best_move = None
+    best_score = -1000
 
-    for move in legal_moves[1:]:
+    for move in legal_moves:
         move_score = score_after_move(player, move, game_board)
         if player == "WHITE":
             if move_score > best_score:
                 best_score = move_score
                 best_move = move
-        else:
-            if move_score < best_score:
-                best_score = move_score
+        if player == "BLACK":
+            if -move_score > best_score:
+                best_score = -move_score
                 best_move = move
 
     apply_move(player, best_move, game_board)
     return best_move
 
 ###
-#  Your Bot
+#  Bot Bot
 ###
-def your_bot(player, game_board=board):
+def bot_bot(player, game_board=board):
     legal_moves = get_legal_moves(player, game_board)
+    # Wenn wir keine Züge haben, müssen wir passen
     if len(legal_moves) == 0:
         apply_move(player, None, game_board)
         return "Pass"
-    apply_move(player, None, game_board)
-    return "Pass"
+    # Wir prüfen, ob wir in den Ecken spielen können:
+    for corner_move in [(0,0),(size-1,0),(0,size-1),(size-1,size-1)]:
+        if corner_move in legal_moves:
+            apply_move(player, corner_move, game_board)
+            print("corner play!")
+            return corner_move
+        
+    # Wir können nicht in die Ecken ziehen, deshalb prüfen wir, wieviele Steine wir umdrehen könnnen.
+    # Wir nehmen den Zug, bei dem dies maximal ist.
+    best_move = None
+    best_score = -1000
+
+    for move in legal_moves:
+        move_score = score_after_move(player, move, game_board)
+        if player == "WHITE":
+            if move_score > best_score:
+                best_score = move_score
+                best_move = move
+        if player == "BLACK":
+            if -move_score > best_score:
+                best_score = -move_score
+                best_move = move
+
+    apply_move(player, best_move, game_board)
+    return best_move
+
 
 ###
 # Hier können Bots zum spielen gewählt werden
@@ -351,14 +376,14 @@ def your_bot(player, game_board=board):
 # 2. random_bot: Zufälligen Zug wählen
 # 3. mystery_bot: ?
 # 4. genius_bot: ?
-# 5. your_bot: Ihr Bot
+# 5. bot_bot
 ###
 
 
 # Bot für schwarz wählen
 player_1 = manual_play
 # Bot für weiss wählen
-player_2 = random_bot            
+player_2 = genius_bot
 
 draw_axis()        
 draw_board()

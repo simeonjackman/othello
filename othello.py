@@ -366,11 +366,11 @@ def bot_bot(player, game_board=board):
     if len(legal_moves) == 0:
         apply_move(player, None, game_board)
         return "Pass"
-    # Wir prüfen, ob wir in den Ecken spielen können:
-    for corner_move in [(0,0),(size-1,0),(0,size-1),(size-1,size-1)]:
-        if corner_move in legal_moves:
-            apply_move(player, corner_move, game_board)
-            return corner_move
+    for move in legal_moves:
+        # Wir prüfen, ob wir in einer Ecke spielen können
+        if move_position(move) == "corner":
+            apply_move(player, move, game_board)
+            return move
         
     # Wir können nicht in die Ecken ziehen, deshalb prüfen wir, wieviele Steine wir umdrehen könnnen.
     # Wir nehmen den Zug, bei dem dies maximal ist.
@@ -431,11 +431,15 @@ def the_big_uttige_bot(player, game_board=board):
     if len(legal_moves) == 0:
         apply_move(player, None, game_board)
         return "Pass"
-    # Wir prüfen, ob wir in den Ecken spielen können:
-    for corner_move in [(0,0),(size-1,0),(0,size-1),(size-1,size-1)]:
-        if corner_move in legal_moves:
-            apply_move(player, corner_move, game_board)
-            return corner_move
+    for move in legal_moves:
+        # Wir prüfen, ob wir in einer Ecke spielen können
+        if move_position(move) == "corner":
+            apply_move(player, move, game_board)
+            return move
+        # Wir prüfen, ob wir am Rand spielen können
+        if move_position(move) == "edge":
+            apply_move(player, move, game_board)
+            return move
     
     # Sonst spielen wir einen random Zug
     move = random.choice(legal_moves)

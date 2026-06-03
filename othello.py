@@ -74,6 +74,11 @@ def score_after_move(player, move, game_board=board):
     white, black = score(board_after_move(player, move, game_board))
     return white - black
 
+def next_player_move_count_after_move(player, move, game_board=board):
+    next_board = board_after_move(player, move, game_board)
+    next_player = opponent(player)
+    return len(get_legal_moves(next_player, next_board))
+
 def get_legal_moves(player, game_board=board):
     legal_moves = []
     other = opponent(player)

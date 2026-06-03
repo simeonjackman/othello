@@ -56,6 +56,7 @@ def score(board):
                 
     return (white,black)
 
+# Wie sieht das Spielbrett nach einem Zug aus?
 def board_after_move(player, move, game_board=board):
     global player_turn
     copied_board = []
@@ -70,10 +71,13 @@ def board_after_move(player, move, game_board=board):
     player_turn = previous_turn
     return copied_board
 
+# Was ist die Differenz der Steine nach meinem Zug?
+# > 0 gut für weiss, < 0 gut für schwarz
 def score_after_move(player, move, game_board=board):
     white, black = score(board_after_move(player, move, game_board))
     return white - black
 
+# Wieviele Züge hat der Gegner nach meinem Zug?
 def next_player_move_count_after_move(player, move, game_board=board):
     next_board = board_after_move(player, move, game_board)
     next_player = opponent(player)

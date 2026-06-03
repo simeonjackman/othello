@@ -247,6 +247,7 @@ def apply_move(player, move, game_board=board):
 ###
 def manual_play(player, game_board=board):
     legal_moves = get_legal_moves(player, game_board)
+    print player + " has " + str(safestones(player,board)) + " Safestones"
     if len(legal_moves) == 0:
         print player + " has to pass"
         apply_move(player, None, game_board)

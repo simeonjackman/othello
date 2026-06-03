@@ -19,6 +19,8 @@ turn_delay_timer = 0
 show_legal_moves = True
 # Zwischenstand nach möglichem Zug anzeigen
 show_potential_score = False
+# Für jeden Zug den Score ausgeben
+show_move_score = True
 # Verschieben des Spielfeldes auf der X-Achse
 x_offset = 0 
 # Verschieben des Spielfeldes auf der Y-Achse
@@ -355,6 +357,8 @@ def genius_bot(player, game_board=board):
 
     for move in legal_moves:
         move_score = score_after_move(player, move, game_board)
+        if show_move_score:
+            print("("+str(move[0])+","+str(move[1])+"):" + str(move_score))
         if player == "WHITE":
             if move_score > best_score:
                 best_score = move_score
@@ -397,6 +401,9 @@ def bot_bot(player, game_board=board):
             if -move_score > best_score:
                 best_score = -move_score
                 best_move = move
+        
+        if show_move_score:
+            print("("+str(move[0])+","+str(move[1])+"):" + str(move_score))
 
     apply_move(player, best_move, game_board)
     return best_move
@@ -431,6 +438,10 @@ def tensai_bot(player, game_board=board):
             move_score += 0
         if move_position(move) == "c_field":
             move_score += -10
+        
+        if show_move_score:
+            print("("+str(move[0])+","+str(move[1])+"):" + str(move_score))
+            
         # Ist der aktuelle Zug der Beste?
         if move_score > best_score:
             best_score = move_score
@@ -497,6 +508,10 @@ def i_ah_bot(player, game_board=board):
             move_score += 1
         if move_position(move) == "middle":
             move_score += 0
+            
+        if show_move_score:
+            print("("+str(move[0])+","+str(move[1])+"):" + str(move_score))
+        
         # Ist der aktuelle Zug der Beste?
         if move_score > best_score:
             best_score = move_score
@@ -538,6 +553,9 @@ def der_fels_bot(player, game_board=board):
         stones_turned = stone_count(opponent(player), board_after_potential_move) - stone_count(opponent(player), board)
         move_score += stones_turned * 5
 
+        if show_move_score:
+            print("("+str(move[0])+","+str(move[1])+"):" + str(move_score))
+
         # Ist der aktuelle Zug der Beste?
         if move_score > best_score:
             best_score = move_score
@@ -578,6 +596,9 @@ def king_silas_bot(player, game_board=board):
         if move_position(move) == "edge":
             move_score += 6
 
+        if show_move_score:
+            print("("+str(move[0])+","+str(move[1])+"):" + str(move_score))
+
         # Ist der aktuelle Zug der Beste?
         if move_score > best_score:
             best_score = move_score
@@ -617,6 +638,9 @@ def chef_abi_bot(player, game_board=board):
             move_score += 100
         if move_position(move) == "edge":
             move_score += 15
+            
+        if show_move_score:
+            print("("+str(move[0])+","+str(move[1])+"):" + str(move_score))
 
         # Ist der aktuelle Zug der Beste?
         if move_score > best_score:
@@ -677,6 +701,9 @@ def sigma_bot(player, game_board=board):
         if center_left <= x <= center_right and center_left <= y <= center_right:
             return False
 
+        if show_move_score:
+            print("("+str(move[0])+","+str(move[1])+"):" + str(move_score))
+
         # Ist der aktuelle Zug der Beste?
         if move_score > best_score:
             best_score = move_score
@@ -696,9 +723,10 @@ def sigma_bot(player, game_board=board):
 # 6.  tensai_bot
 # 7.  the_big_uttige_bot
 # 8.  i_ah_bot
-# 9.  king_silas_bot
-# 10. chef_abi_bot
-# 11. sigma_bot
+# 9.  der_fels_bot
+# 10. king_silas_bot
+# 11. chef_abi_bot
+# 12. sigma_bot
 ###
 
 

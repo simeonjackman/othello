@@ -468,8 +468,13 @@ def i_ah_bot(player, game_board=board):
     for move in legal_moves:
         move_score = 0
         board_after_potential_move = board_after_move(player, move, game_board=board)
+        # Wir berechnen, wieviele Safestones dazubekommen sind
         safestones_added = safestones(player, board_after_potential_move) - safestones(player, board)
         move_score += safestones_added * 2
+        # Wir berechnen, wieviele Züge der Gegner nach einem potentiellen Zug hat
+        options_after_move = possible_move_count(opponent(player), game_board=board_after_potential_move)
+        move_score -= options_after_move
+        # Wir evalieren wo wir unseren Stein hinsetzen
         if move_position(move) == "corner":
             move_score += 3
         if move_position(move) == "edge":
@@ -499,7 +504,7 @@ def i_ah_bot(player, game_board=board):
 
 
 # Bot für schwarz wählen
-player_1 = i_ah_bot
+player_1 = genius_bot
 # Bot für weiss wählen
 player_2 = random_bot
 

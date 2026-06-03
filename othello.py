@@ -141,6 +141,9 @@ def move_position(move, game_board=board):
     if (y == 1 and (x == 0 or x == size - 1)) or (y == size - 2 and (x == 0 or x == size - 1)):
         return "c_field"
 
+    if (x == 1 or x == size - 2) and (y == 1 or y == size - 2):
+        return "x_field"
+
     if x == 0 or x == size - 1 or y == 0 or y == size - 1:
         return "edge"
 

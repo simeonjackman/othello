@@ -186,6 +186,10 @@ def get_legal_moves(player, game_board=board):
 
     return legal_moves
 
+# Wie viele mögliche Züge hat ein Spieler?
+def possible_move_count(player, game_board=board):
+    return len(get_legal_moves(player, game_board))
+
 # Zeichnet Achsen
 def draw_axis():
     setFontSize(20)

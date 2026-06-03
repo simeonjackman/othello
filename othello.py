@@ -627,6 +627,65 @@ def chef_abi_bot(player, game_board=board):
     return best_move
 
 ###
+#  Sigma Bot
+###
+def sigma_bot(player, game_board=board):
+    legal_moves = get_legal_moves(player, game_board)
+    # Wenn wir keine Züge haben, müssen wir passen
+    if len(legal_moves) == 0:
+        apply_move(player, None, game_board)
+        return "Pass"
+        
+    # Wir nehmen den Zug, bei dem der score maximal ist.
+    best_move = None
+    best_score = -1000
+
+    # Wir prüfen jeden legalen Zug und bewerten ihn
+    for move in legal_moves:
+        move_score = 0
+        board_after_potential_move = board_after_move(player, move, game_board=board)
+
+        # Wir berechnen, wieviele Steine wir gedreht haben
+        stones_turned = stone_count(opponent(player), board_after_potential_move) - stone_count(opponent(player), board)
+        move_score += stones_turned / 4
+
+        # Wir evalieren wo wir unseren Stein hinsetzen
+        if move_position(move) == "corner":
+            move_score += 5
+        if move_position(move) == "edge":
+            move_score += 2
+
+        # Liegt ein möglicher Zug im inneren Ring um die Startpositionen?
+
+        x, y = move
+        center_left = int(size / 2) - 1
+        center_right = int(size / 2)
+
+        # Ist der Stein auf der linken Seite des inneren Rings?
+        if x == center_left - 1 and y > 1 and  y < size - 2:
+            move_score += 1
+        # Ist der Stein auf der rechten Seite des inneren Rings?
+        if x == center_right + 1 and y > 1 and  y < size - 2:
+            move_score += 1
+        # Ist der Stein auf der oberen Seite des inneren Rings?
+        if y == center_right + 1 and x > 1 and  x < size - 2:
+            move_score += 1
+        # Ist der Stein auf der unteren Seite des inneren Rings?
+        if y == center_left - 1 and x > 1 and  x < size - 2:
+            move_score += 1
+
+        if center_left <= x <= center_right and center_left <= y <= center_right:
+            return False
+
+        # Ist der aktuelle Zug der Beste?
+        if move_score > best_score:
+            best_score = move_score
+            best_move = move
+        
+    apply_move(player, best_move, game_board)
+    return best_move
+
+###
 # Hier können Bots zum spielen gewählt werden
 # Zur Auswahl stehen alle, welche im Code definiert wurden
 # 1.  manual_play: Manuell spielen
@@ -639,6 +698,7 @@ def chef_abi_bot(player, game_board=board):
 # 8.  i_ah_bot
 # 9.  king_silas_bot
 # 10. chef_abi_bot
+# 11. sigma_bot
 ###
 
 

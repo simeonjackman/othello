@@ -56,6 +56,12 @@ def score(board):
                 
     return (white,black)
 
+def stone_count(player, game_board=board):
+    white, black = score(game_board)
+    if player == "WHITE":
+        return white
+    return black
+
 # Wie sieht das Spielbrett nach einem Zug aus?
 def board_after_move(player, move, game_board=board):
     global player_turn

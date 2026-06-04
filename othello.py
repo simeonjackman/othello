@@ -738,47 +738,56 @@ def sigma_bot(player, game_board=board):
     # Wir nehmen den Zug, bei dem der score maximal ist.
     best_move = None
     best_score = -1000
-
+ 
     # Wir prüfen jeden legalen Zug und bewerten ihn
     for move in legal_moves:
         move_score = 0
         board_after_potential_move = board_after_move(player, move, game_board=board)
-
+ 
         # Wir berechnen, wieviele Steine wir gedreht haben
         stones_turned = stone_count(opponent(player), board_after_potential_move) - stone_count(opponent(player), board)
-        move_score += stones_turned / 4
-
+        move_score += stones_turned
+ 
         # Wir evalieren wo wir unseren Stein hinsetzen
         if move_position(move) == "corner":
-            move_score += 5
+            move_score += 1000  
         if move_position(move) == "edge":
-            move_score += 2
-
+            move_score += 10    
+        if move_position(move) == "x_field" or move_position(move)== "c_field":
+            move_score -= 500
+            
+        # 2. MOBILITÄT DES GEGNERS EINSCHRÄNKEN
+        opponent_options = possible_move_count(opponent(player), game_board=board_after_potential_move)
+        move_score -= (opponent_options * 5)
+ 
+        # 3. SICHERE STEINE BELOHNEN
+        safestones_after = safestones_after_move(player, move, game_board=game_board)
+        move_score += (safestones_after * 20)
+        
         # Liegt ein möglicher Zug im inneren Ring um die Startpositionen?
-
         x, y = move
         center_left = int(size / 2) - 1
         center_right = int(size / 2)
-
+ 
         # Ist der Stein auf der linken Seite des inneren Rings?
         if x == center_left - 1 and y > 1 and  y < size - 2:
-            move_score += 1
+            move_score += 10
         # Ist der Stein auf der rechten Seite des inneren Rings?
         if x == center_right + 1 and y > 1 and  y < size - 2:
-            move_score += 1
+            move_score += 10
         # Ist der Stein auf der oberen Seite des inneren Rings?
         if y == center_right + 1 and x > 1 and  x < size - 2:
-            move_score += 1
+            move_score += 10
         # Ist der Stein auf der unteren Seite des inneren Rings?
         if y == center_left - 1 and x > 1 and  x < size - 2:
-            move_score += 1
-
+            move_score += 10
+ 
         if center_left <= x <= center_right and center_left <= y <= center_right:
             return False
-
+ 
         if show_move_score:
             print("("+str(move[0])+","+str(move[1])+"):" + str(move_score))
-
+ 
         # Ist der aktuelle Zug der Beste?
         if move_score > best_score:
             best_score = move_score

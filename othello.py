@@ -373,40 +373,46 @@ def genius_bot(player, game_board=board):
 
 ###
 #  Bot Bot
+
 ###
+
 def bot_bot(player, game_board=board):
+
     legal_moves = get_legal_moves(player, game_board)
     # Wenn wir keine Züge haben, müssen wir passen
     if len(legal_moves) == 0:
         apply_move(player, None, game_board)
         return "Pass"
+
     for move in legal_moves:
+        board_after_potential_move = board_after_move(player, move, game_board=board)
         # Wir prüfen, ob wir in einer Ecke spielen können
         if move_position(move) == "corner":
             apply_move(player, move, game_board)
             return move
-        
+
     # Wir können nicht in die Ecken ziehen, deshalb prüfen wir, wieviele Steine wir umdrehen könnnen.
     # Wir nehmen den Zug, bei dem dies maximal ist.
     best_move = None
     best_score = -1000
-
     for move in legal_moves:
-        move_score = score_after_move(player, move, game_board)
-        if player == "WHITE":
-            if move_score > best_score:
-                best_score = move_score
-                best_move = move
-        if player == "BLACK":
-            if -move_score > best_score:
-                best_score = -move_score
-                best_move = move
-        
+        move_score = 0
+        # Wir berechnen, wieviele Steine wir gedreht haben
+        stones_turned = stone_count(opponent(player), board_after_potential_move) - stone_count(opponent(player), board)
+        move_score += stones_turned
+        if move_position(move) == "c_field":
+            move_score += -1
         if show_move_score:
             print("("+str(move[0])+","+str(move[1])+"):" + str(move_score))
-
+        
+        # Ist der aktuelle Zug der Beste?
+        if move_score > best_score:
+            best_score = move_score
+            best_move = move
+    
     apply_move(player, best_move, game_board)
     return best_move
+ 
 
 ###
 #  Tensai Bot

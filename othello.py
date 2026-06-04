@@ -436,7 +436,7 @@ def tensai_bot(player, game_board=board):
             move_score += 7
         if move_position(move) == "middle":
             move_score += 0
-        if move_position(move) == "c_field":
+        if move_position(move) == "c_field" or move_position(move) == "x_field":
             move_score += -10
         
         if show_move_score:

@@ -479,48 +479,56 @@ def tensai_bot(player, game_board=board):
 #  The Big Uttige Bot
 ###
 def the_big_uttige_bot(player, game_board=board):
-    legal_moves = get_legal_moves(player, game_board)
-    # Wenn wir keine Züge haben, müssen wir passen
-    if len(legal_moves) == 0:
-        apply_move(player, None, game_board)
-        return "Pass"
-    # Wir nehmen den Zug, bei dem der score maximal ist.
-    best_move = None
-    best_score = -1000
-
-    # Wir prüfen jeden legalen Zug und bewerten ihn
-    for move in legal_moves:
-        move_score = 0
-        board_after_potential_move = board_after_move(player, move, game_board=board)
-        # Wir berechnen, wieviele Steine wir gedreht haben
-        stones_turned = stone_count(opponent(player), board_after_potential_move) - stone_count(opponent(player), board)
-        move_score += stones_turned * 0
-        # Wir berechnen, wieviele Safestones dazubekommen sind
-        safestones_added = safestones(player, board_after_potential_move) - safestones(player, board)
-        move_score += safestones_added * 1
-        # Wir berechnen, wieviele Züge der Gegner nach einem potentiellen Zug hat
-        options_after_move = possible_move_count(opponent(player), game_board=board_after_potential_move)
-        move_score -= options_after_move * 1
-        # Wir evalieren wo wir unseren Stein hinsetzen
-        if move_position(move) == "corner":
-            move_score += 3
-        if move_position(move) == "edge":
-            move_score += 1
-        if move_position(move) == "middle":
-            move_score += 0
-        if move_position(move) == "c_field":
-            move_score += 1
-            
-        if show_move_score:
-            print("("+str(move[0])+","+str(move[1])+"):" + str(move_score))
-        
-        # Ist der aktuelle Zug der Beste?
-        if move_score > best_score:
-            best_score = move_score
-            best_move = move
-        
-    apply_move(player, best_move, game_board)
-    return best_move
+   legal_moves = get_legal_moves(player, game_board)
+   # Wenn wir keine Züge haben, müssen wir passen
+   if len(legal_moves) == 0:
+       apply_move(player, None, game_board)
+       return "Pass"
+   # Wir nehmen den Zug, bei dem der score maximal ist.
+   best_move = None
+   best_score = -1000
+   # Wir prüfen jeden legalen Zug und bewerten ihn
+   for move in legal_moves:
+       move_score = 0
+       board_after_potential_move = board_after_move(player, move, game_board=board)
+       # Wir berechnen, wieviele Steine wir gedreht haben
+       stones_turned = stone_count(opponent(player), board_after_potential_move) - stone_count(opponent(player), board)
+       move_score += stones_turned * 0.5
+       # Wir berechnen, wieviele Safestones dazubekommen sind
+       safestones_added = safestones(player, board_after_potential_move) - safestones(player, board)
+       move_score += safestones_added * 20
+       # Wir berechnen, wieviele Züge der Gegner nach einem potentiellen Zug hat
+       options_after_move = possible_move_count(opponent(player), game_board=board_after_potential_move)
+       move_score -= options_after_move * 4
+       # Wir evalieren wo wir unseren Stein hinsetzen
+       if move_position(move) == "corner":
+           move_score += 150
+       if move_position(move) == "edge":
+           move_score += 15
+       if move_position(move) == "middle":
+           move_score += 0
+       if move_position(move) == "c_field":
+           move_score -= 50
+       if move_position(move) == "x_field":
+           move_score -= 120
+       if show_move_score:
+           print("("+str(move[0])+","+str(move[1])+"):" + str(move_score))
+       # Ist der aktuelle Zug der Beste?
+       if move_score > best_score:
+           best_score = move_score
+           best_move = move
+       if quadrant_corner_owned_by_player(player, move, board):
+           if move_position(move) == "middle":
+               move_score += 5
+           if move_position(move) == "edge":
+               move_score += 15
+       else:
+           if move_position(move) == "middle":
+               move_score -= 2
+           if move_position(move) == "edge":
+               move_score += 5
+   apply_move(player, best_move, game_board)
+   return best_move
 
 ###
 #  I-Ah Bot

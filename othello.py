@@ -587,7 +587,7 @@ def der_fels_bot(player, game_board=board):
     if len(legal_moves) == 0:
         apply_move(player, None, game_board)
         return "Pass"
-        
+       
     # Wir nehmen den Zug, bei dem der score maximal ist.
     best_move = None
     best_score = -1000
@@ -599,13 +599,13 @@ def der_fels_bot(player, game_board=board):
         # Wir berechnen, ob Safestones dazubekommen sind
         if safestones(player, board_after_potential_move) > safestones(player, board):
             move_score += 100
-        # Wir evalieren wo wir unseren Stein hinsetzen
+        # Wir evaluieren wo wir unseren Stein hinsetzen
         if move_position(move) == "corner":
-            move_score += 100
+            move_score += 120
         if move_position(move) == "edge":
             move_score += 80
         if move_position(move) == "middle":
-            move_score += 2
+            move_score += 80
 
         # Wir berechnen, wieviele Steine wir gedreht haben
         stones_turned = stone_count(opponent(player), board_after_potential_move) - stone_count(opponent(player), board)
@@ -618,7 +618,7 @@ def der_fels_bot(player, game_board=board):
         if move_score > best_score:
             best_score = move_score
             best_move = move
-        
+       
     apply_move(player, best_move, game_board)
     return best_move
 

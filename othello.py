@@ -157,6 +157,25 @@ def move_position(move, game_board=board):
 
     return "middle"
 
+# Ist die Ecke im gleichen Quadranten wie der Zug durch die eigene Farbe besetzt?
+def quadrant_corner_owned_by_player(player, move, game_board=board):
+    if move == None:
+        return False
+
+    x, y = move
+    half = size // 2
+
+    if x < half and y < half:
+        corner_x, corner_y = 0, 0
+    elif x >= half and y < half:
+        corner_x, corner_y = size - 1, 0
+    elif x < half and y >= half:
+        corner_x, corner_y = 0, size - 1
+    else:
+        corner_x, corner_y = size - 1, size - 1
+
+    return game_board[corner_y][corner_x] == player
+
 def get_legal_moves(player, game_board=board):
     legal_moves = []
     other = opponent(player)

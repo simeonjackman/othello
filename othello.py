@@ -446,7 +446,6 @@ def tensai_bot(player, game_board=board):
     # Wir nehmen den Zug, bei dem der score maximal ist.
     best_move = None
     best_score = -1000
-
     for move in legal_moves:
         move_score = 0
         board_after_potential_move = board_after_move(player, move, game_board=board)
@@ -463,15 +462,21 @@ def tensai_bot(player, game_board=board):
             move_score += 0
         if move_position(move) == "c_field" or move_position(move) == "x_field":
             move_score += -10
-        
+
+        if quadrant_corner_owned_by_player(player, move, board):
+            if move_position(move) == "middle" or move_position(move) == "x_field":
+                move_score += 10
+        else:
+            if move_position(move) == "middle"  or move_position(move) == "x_field":
+                move_score += 0
+
         if show_move_score:
             print("("+str(move[0])+","+str(move[1])+"):" + str(move_score))
-            
+
         # Ist der aktuelle Zug der Beste?
         if move_score > best_score:
             best_score = move_score
             best_move = move
-        
     apply_move(player, best_move, game_board)
     return best_move
 

@@ -598,18 +598,22 @@ def der_fels_bot(player, game_board=board):
         board_after_potential_move = board_after_move(player, move, game_board=board)
         # Wir berechnen, ob Safestones dazubekommen sind
         if safestones(player, board_after_potential_move) > safestones(player, board):
-            move_score += 100
+            move_score += 150
         # Wir evaluieren wo wir unseren Stein hinsetzen
         if move_position(move) == "corner":
-            move_score += 120
+            move_score += 200
         if move_position(move) == "edge":
-            move_score += 80
+            move_score += 20
         if move_position(move) == "middle":
-            move_score += 80
-
+            move_score += 2
+        else:
+            if move_position(move) == "c_field":
+                move_score += 10
+            if move_position(move) == "x_field":
+                move_score += 5
         # Wir berechnen, wieviele Steine wir gedreht haben
         stones_turned = stone_count(opponent(player), board_after_potential_move) - stone_count(opponent(player), board)
-        move_score += stones_turned * 5
+        move_score += stones_turned * 2
 
         if show_move_score:
             print("("+str(move[0])+","+str(move[1])+"):" + str(move_score))

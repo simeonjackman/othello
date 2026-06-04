@@ -621,7 +621,7 @@ def king_silas_bot(player, game_board=board):
     if len(legal_moves) == 0:
         apply_move(player, None, game_board)
         return "Pass"
-        
+       
     # Wir nehmen den Zug, bei dem der score maximal ist.
     best_move = None
     best_score = -1000
@@ -633,16 +633,28 @@ def king_silas_bot(player, game_board=board):
 
         # Wir berechnen, wieviele Steine wir gedreht haben
         stones_turned = stone_count(opponent(player), board_after_potential_move) - stone_count(opponent(player), board)
-        move_score += stones_turned * 2
+        move_score -= stones_turned * 1
 
-        # Wir berechnen, ob Safestones dazubekommen sind
-        if safestones(player, board_after_potential_move) > safestones(player, board):
-            move_score += 10
+
         # Wir evalieren wo wir unseren Stein hinsetzen
         if move_position(move) == "corner":
-            move_score += 15
+            move_score += 150
         if move_position(move) == "edge":
-            move_score += 6
+            move_score += 20
+        if move_position(move) == "c_field":
+            move_score -= 40
+        if move_position(move) == "x_field":
+            move_score -= 80
+        if move_position(move) == "middle":
+            move_score += 2
+        # Wir berechnen, wieviele Züge der Gegner nach einem potentiellen Zug hat
+        options_after_move = possible_move_count(opponent(player), game_board=board_after_potential_move)
+        move_score -= options_after_move * 10
+       
+        # Wir berechnen, wieviele Safestones dazubekommen sind
+        safestones_added = safestones(player, board_after_potential_move) - safestones(player, board)
+        move_score += safestones_added * 40
+       
 
         if show_move_score:
             print("("+str(move[0])+","+str(move[1])+"):" + str(move_score))
@@ -651,7 +663,7 @@ def king_silas_bot(player, game_board=board):
         if move_score > best_score:
             best_score = move_score
             best_move = move
-        
+       
     apply_move(player, best_move, game_board)
     return best_move
 

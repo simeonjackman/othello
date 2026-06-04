@@ -665,7 +665,12 @@ def king_silas_bot(player, game_board=board):
         safestones_added = safestones(player, board_after_potential_move) - safestones(player, board)
         move_score += safestones_added * 40
        
-
+        if quadrant_corner_owned_by_player(player, move, board):
+            if move_position(move) == "x_field":
+                move_score += 82
+            if move_position(move) == "c_field":
+                move_score += 55
+               
         if show_move_score:
             print("("+str(move[0])+","+str(move[1])+"):" + str(move_score))
 
